@@ -1,0 +1,82 @@
+import argparse
+from cgitb import text
+
+def checkArguments():
+    parser = argparse.ArgumentParser(description='Desencripts with caesar algorithm a given file')
+    
+    parser.add_argument("input", type=str, metavar='INFILE', help="The file to descypher",)
+    parser.add_argument('-o', dest = "output", type=str, metavar='OUTFILE',help='Specify output file')
+    args = parser.parse_args()
+    
+    if len(vars(args)) < 2:
+        print("Error, missing arguments.")
+        print("Call the program by this way: python3 monodec fichentrada.txt -o fichsalida.enc")
+        exit()
+    if (args.input == None) or (args.output == None):
+        print("Error, bad arguments.")
+        print("Call the program by this way: python3 monodec fichentrada.txt -o fichsalida.enc")
+        exit()
+    return args.input, args.output
+
+def openFile(path):
+    try:
+        f = open(path, "r")
+        return f
+            
+    except:
+        print('Error, file could not be opened check if file exists.')
+
+def readFile(file):
+    try:
+        text = file.read() 
+        return text
+            
+    except:
+        print('Error, file could not be readed check if file exists.')
+
+def decipherText(text):
+
+    decipheredText = ""
+
+    indice = text.index('\n')
+    key = int(text[:indice])
+    
+    text = text.upper()
+
+    for i in range(len(text)):
+
+        char = text[i]
+
+        if not char.isspace():
+            decipheredText += chr((ord(char) - key-65) % 26 + 65)
+        else:
+            decipheredText += " "
+
+    return decipheredText
+
+def saveText(decipheredText, path, key):
+    try:
+        indice = decipheredText.index(' ')
+        deciphered_Text = (decipheredText[indice+1:])
+
+        f = open(path, "w")
+        f.write(key+'\n'+deciphered_Text)
+    except:
+        print('Error, file could not be saved check path.')
+
+def saveKey(decipheredText):
+    indice = decipheredText.index('\n')
+    key = decipheredText[:indice]
+    return key
+
+if __name__ == "__main__":
+    
+    input, output = checkArguments()
+    
+    file = openFile(input)
+    decipheredText = readFile(file)
+
+    dedecipheredText = decipherText(decipheredText)
+    key = saveKey(decipheredText)
+    
+    saveText(dedecipheredText, output, key)

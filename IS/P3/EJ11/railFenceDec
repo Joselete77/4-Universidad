@@ -1,0 +1,117 @@
+import argparse
+from cgitb import text
+
+def checkArguments():
+    parser = argparse.ArgumentParser(description='Desencripts with rail fence algorithm a given file')
+    
+    parser.add_argument("input", type=str, metavar='INFILE', help="The file to descypher",)
+    parser.add_argument('-o', dest = "output", type=str, metavar='OUTFILE',help='Specify output file')
+    args = parser.parse_args()
+    
+    if len(vars(args)) < 2:
+        print("Error, missing arguments.")
+        print("Call the program by this way: python3 railFenceDec entrada.txt -o salida.enc")
+        exit()
+    if (args.input == None) or (args.output == None):
+        print("Error, bad arguments.")
+        print("Call the program by this way: python3 railFenceDec entrada.txt -o salida.enc")
+        exit()
+    return args.input, args.output
+
+def openFile(path):
+    try:
+        f = open(path, "r")
+        return f
+            
+    except:
+        print('Error, file could not be opened check if file exists.')
+
+def readFile(file):
+    try:
+        text = file.read() 
+        return text
+            
+    except:
+        print('Error, file could not be readed check if file exists.')
+
+def decryptRailFence(cipher, key):
+    key = int(key)
+
+    indice = cipher.index('\n')
+    key = int(cipher[:indice])
+    
+    cipher = cipher.upper()
+
+    cipher = cipher[indice+1:]
+ 
+    rail = [['\n' for i in range(len(cipher))]  
+                  for j in range(key)] 
+      
+    dir_down = None
+    row, col = 0, 0
+      
+    for i in range(len(cipher)): 
+        if row == 0: 
+            dir_down = True
+        if row == key - 1: 
+            dir_down = False
+          
+        rail[row][col] = '*'
+        col += 1
+          
+        if dir_down: 
+            row += 1
+        else: 
+            row -= 1
+              
+    index = 0
+    for i in range(key): 
+        for j in range(len(cipher)): 
+            if ((rail[i][j] == '*') and
+               (index < len(cipher))): 
+                rail[i][j] = cipher[index] 
+                index += 1
+          
+    result = [] 
+    row, col = 0, 0
+    for i in range(len(cipher)): 
+          
+        if row == 0: 
+            dir_down = True
+        if row == key-1: 
+            dir_down = False
+              
+        if (rail[row][col] != '*'): 
+            result.append(rail[row][col]) 
+            col += 1
+              
+        if dir_down: 
+            row += 1
+        else: 
+            row -= 1
+    decipheredText = "" . join(result)
+    return decipheredText
+
+def saveText(decipheredText, path, key):
+    try:
+        f = open(path, "w")
+        f.write(str(key)+'\n'+decipheredText)
+    except:
+        print('Error, file could not be saved check path.')
+
+def saveKey(text):
+    indice = text.index('\n')
+    key = text[:indice]
+    return key
+
+if __name__ == "__main__":
+    
+    input, output = checkArguments()
+    
+    file = openFile(input)
+    decipheredText = readFile(file)
+
+    key = saveKey(decipheredText)
+    dedecipheredText = decryptRailFence(decipheredText, key)
+    
+    saveText(dedecipheredText, output, key)

@@ -1,0 +1,74 @@
+import argparse
+import random
+
+def checkArguments():
+    parser = argparse.ArgumentParser(description='Encripts with caesar algorithm a file')
+    
+    parser.add_argument("input", type=str, metavar='INFILE', help="The file to cypher",)
+    parser.add_argument('-o', dest = "output", type=str, metavar='OUTFILE',help='Encrypt output file')
+    args = parser.parse_args()
+    
+    if len(vars(args)) < 2:
+        print("Error, missing arguments.")
+        print("Call the program by this way: python3 monoenc fichentrada.txt -o fichsalida.enc")
+        exit()
+    if  (args.input == None) or (args.output == None):
+        print("Error, bad arguments.")
+        print("Call the program by this way: python3 monoenc fichentrada.txt -o fichsalida.enc")
+        exit()
+    return args.input, args.output
+    
+def openFile(path):
+    try:
+        f = open(path, "r")
+        return f
+            
+    except:
+        print('Error, file could not be opened check if file exists.')
+
+def readFile(file):
+    try:
+        text = file.read() 
+        return text
+            
+    except:
+        print('Error, file could not be readed check if file exists.')
+
+def cipherText(text, key):
+
+    cipheredText = ""
+    text = text.upper()
+
+    for i in range(len(text)):
+
+        char = text[i]
+
+        if not char.isspace():
+            cipheredText += chr((ord(char) + key-65) % 26 + 65)
+        else:
+            cipheredText += " "
+
+    return cipheredText
+
+def saveCipheredText(cipheredText, path, key):
+    try:
+        f = open(path, "w")
+        f.write(str(key) + '\n' + cipheredText)
+    except:
+        print('Error, file could not be saved check path.')
+
+def randomKey():
+    k = random.randint(1,10)
+    return k
+
+if __name__ == "__main__":
+    
+    input, output = checkArguments()
+
+    key = randomKey()    
+    file = openFile(input)
+    text = readFile(file)
+
+    cipheredText = cipherText(text, key)
+    
+    saveCipheredText(cipheredText, output, key)

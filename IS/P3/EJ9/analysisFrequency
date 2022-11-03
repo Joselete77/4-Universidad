@@ -1,0 +1,69 @@
+import argparse
+import string
+from xml.dom.pulldom import CHARACTERS
+
+def checkArguments():
+    parser = argparse.ArgumentParser(description='Frequency analysis of a text')
+    
+    parser.add_argument("input", type=str, metavar='INFILE', help="The file to analyze",)
+    parser.add_argument('-o', dest = "output", type=str, metavar='OUTFILE',help='Parsed output file')
+    args = parser.parse_args()
+    
+    if len(vars(args)) < 2:
+        print("Error, missing arguments.")
+        print("Call the program by this way: python3 analysisFrequency ficheroLectura.txt -o ficheroAnalisis.txt")
+        exit()
+    if (args.input == None) or (args.output == None):
+        print("Error, bad arguments.")
+        print("Call the program by this way: python3 analysisFrequency ficheroLectura.txt -o ficheroAnalisis.txt")
+        exit()
+    return args.input, args.output
+    
+def openFile(path):
+    try:
+        f = open(path, "r")
+        return f
+            
+    except:
+        print('Error, file could not be opened check if file exists.')
+
+def readFile(file):
+    try:
+        text = file.read() 
+        return text
+            
+    except:
+        print('Error, file could not be readed check if file exists.')
+
+def analysisFrequency(text):
+    
+    text = text.upper()
+    list = []
+    totalCharacters = len(text)
+    characters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    
+    for character in characters:
+        percentage = round((text.count(character)/totalCharacters)*100, 2)
+        list.append(character + ' aparece: ' + str(text.count(character)) + ' veces' + ', frecuencia: ' + str(percentage) + '%')
+    
+    return list
+
+def saveAnalysis(analysisFrequency, path):
+    try:
+        f = open(path, "w")
+
+        for i in analysisFrequency:
+                f.write(i+"\n")
+    except:
+        print('Error, file could not be saved check path.')
+
+if __name__ == "__main__":
+    
+    input, output = checkArguments()
+    
+    file = openFile(input)
+    text = readFile(file)
+
+    analysisFrequency = analysisFrequency(text)
+    
+    saveAnalysis(analysisFrequency, output)

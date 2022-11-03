@@ -1,0 +1,10 @@
+random.choice(string.ascii_lowercase)
+    A esta función se le pasa string.ascii_lowercase que es el abecedario entero en minúscula, y la función
+    elige un elemento aleatoriamente de todos ellos
+
+random.sample([3,0,-1,4.2,55],2)
+    Esta función devuelve una lista con una selección aleatoria de un número específico de elementos de una secuencia. A esta función se le pasan dos parámetros: el primero es la secuencia, esto puede ser una lista o un rango (en este caso una lista) y el segundo parámetro es K, que es el tamaño
+    de la lista que se va a devolver
+
+random.randint(1,10)
+    Esta función devuelve un número aleatorio entre 1 y 10 (ambos incluidos)
