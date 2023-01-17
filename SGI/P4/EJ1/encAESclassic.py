@@ -16,6 +16,7 @@ ct_bytes = cipher.encrypt(pad(data, AES.block_size))
 # Pero JSON no admite bytes, solo str
 # b64encode() codifica en Base64 y de ahí a str no hay problema
 # Si no pasamos antes a Base64, podría darnos problemas en JSON.
+print(cipher)
 iv = b64encode(cipher.iv).decode('utf-8')
 ct = b64encode(ct_bytes).decode('utf-8')
 result = {}
